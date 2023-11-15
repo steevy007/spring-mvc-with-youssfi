@@ -6,6 +6,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
@@ -31,11 +33,15 @@ public class PatientMvcApplication {
             patientRepositories.save(new Patient(null, "Lyam Mael Pierre", new Date(), false, 50));
             patientRepositories.save(new Patient(null, "Gassant Erns", new Date(), true, 60));
 
-*/
+
             patientRepositories.findAll().forEach(patient -> {
                 System.out.println(patient.getNom());
-            });
+            });*/
 
         };
+    }
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }
