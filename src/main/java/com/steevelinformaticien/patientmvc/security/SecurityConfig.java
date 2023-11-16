@@ -12,7 +12,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -21,16 +25,12 @@ public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
 
-    /*@Bean
-    public UserDetailsService userDetailsService(){
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                return null;
-            }
-        };
-    }*/
     @Bean
+    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource){
+        return new JdbcUserDetailsManager(dataSource);
+    }
+
+    //@Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
         return new InMemoryUserDetailsManager(
                 User.withUsername("steeve").password(passwordEncoder.encode("1234")).roles("USER").build(),
@@ -42,7 +42,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
-        httpSecurity.formLogin().loginPage("/login").permitAll();
+        httpSecurity.formLogin().loginPage("/login").defaultSuccessUrl("/").permitAll();
         httpSecurity.rememberMe().alwaysRemember(false);
         httpSecurity.authorizeHttpRequests().requestMatchers("/webjars/**").permitAll();
         //httpSecurity.authorizeHttpRequests().requestMatchers("/user/**").hasRole("USER");
