@@ -1,5 +1,6 @@
 package com.steevelinformaticien.patientmvc.security;
 
+import com.steevelinformaticien.patientmvc.security.services.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +25,9 @@ import javax.sql.DataSource;
 public class SecurityConfig {
 
     private PasswordEncoder passwordEncoder;
+    private UserDetailServiceImpl userDetailService;
 
-    @Bean
+    //@Bean
     public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource){
         return new JdbcUserDetailsManager(dataSource);
     }
@@ -50,6 +52,7 @@ public class SecurityConfig {
         //disable authentification
         httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
         httpSecurity.exceptionHandling().accessDeniedPage("/notAuthorized");
+        httpSecurity.userDetailsService(userDetailService);
         return httpSecurity.build();
     }
 

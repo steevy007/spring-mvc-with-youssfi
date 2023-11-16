@@ -2,6 +2,7 @@ package com.steevelinformaticien.patientmvc;
 
 import com.steevelinformaticien.patientmvc.entities.Patient;
 import com.steevelinformaticien.patientmvc.repositories.PatientRepositories;
+import com.steevelinformaticien.patientmvc.security.services.AccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,7 +45,7 @@ public class PatientMvcApplication {
         };
     }
 
-    @Bean
+    //@Bean
     public CommandLineRunner commandLineRunner(JdbcUserDetailsManager jdbcUserDetailsManager) {
         PasswordEncoder passwordEncoder = passwordEncoder();
 
@@ -58,6 +59,23 @@ public class PatientMvcApplication {
             if(user2==null)jdbcUserDetailsManager.createUser(User.withUsername("steeve1").password(passwordEncoder.encode("1234")).roles("USER").build());
             if(user3==null)jdbcUserDetailsManager.createUser(User.withUsername("admin").password(passwordEncoder.encode("1234")).roles("USER","ADMIN").build());
 
+        };
+    }
+
+    //@Bean
+    CommandLineRunner commandLineRunnerUserDetail(AccountService service){
+        return args->{
+            service.addRole("USER");
+            service.addRole("ADMIN");
+
+            service.addNewUser("steeve","1234","sanon@gmail.com","1234");
+            service.addNewUser("steeve1","1234","sanon1@gmail.com","1234");
+            service.addNewUser("admin","1234","admin@gmail.com","1234");
+
+            service.addRoleToUser("steeve","USER");
+            service.addRoleToUser("steeve1","USER");
+            service.addRoleToUser("admin","USER");
+            service.addRoleToUser("admin","ADMIN");
         };
     }
 
